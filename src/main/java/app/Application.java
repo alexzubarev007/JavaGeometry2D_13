@@ -26,6 +26,7 @@ public class Application implements Consumer<Event> {
      * отступы панелей
      */
     private static final int PANEL_PADDING = 5;
+    public static final int C_RAD_IN_PX = 4;
 
     /**
      * Конструктор окна приложения
