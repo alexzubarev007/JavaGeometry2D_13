@@ -30,6 +30,7 @@ public class Application implements Consumer<Event> {
      * радиус скругления элементов
      */
     public static final int C_RAD_IN_PX = 4;
+
     private final Label label;
     /**
      * Первый заголовок
