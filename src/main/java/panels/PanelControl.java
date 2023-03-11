@@ -1,5 +1,6 @@
 package panels;
 
+
 import app.Point;
 import app.Task;
 import java.util.ArrayList;
@@ -11,11 +12,11 @@ import misc.CoordinateSystem2i;
 import misc.Vector2d;
 import misc.Vector2i;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static app.Application.PANEL_PADDING;
-import static app.Colors.FIELD_BACKGROUND_COLOR;
-import static app.Colors.FIELD_TEXT_COLOR;
+import static app.Colors.*;
 
 /**
  * Панель управления
@@ -83,6 +84,7 @@ public class PanelControl extends GridPanel {
                 6, 7, 4, 2, 2, 1, "0.0", true,
                 FIELD_TEXT_COLOR, true);
         inputs.add(yField);
+
         Button addToFirstSet = new Button(
                 window, false, backgroundColor, PANEL_PADDING,
                 6, 7, 0, 3, 3, 1, "Добавить в первое\nмножество",
@@ -138,8 +140,8 @@ public class PanelControl extends GridPanel {
                     button.checkOver(lastWindowCS.getRelativePos(new Vector2i(ee)));
             }
             // событие нажатия мыши
-        } else if (e instanceof EventMouseButton ee) {
-            if (!lastInside || !ee.isPressed())
+        } else if (e instanceof EventMouseButton) {
+            if (!lastInside)
                 return;
 
             Vector2i relPos = lastWindowCS.getRelativePos(lastMove);
@@ -148,6 +150,7 @@ public class PanelControl extends GridPanel {
             for (Button button : buttons) {
                 button.click(relPos);
             }
+
             // перебираем поля ввода
             for (Input input : inputs) {
                 // если клик внутри этого поля
@@ -159,33 +162,48 @@ public class PanelControl extends GridPanel {
             // перерисовываем окно
             window.requestFrame();
             // обработчик ввода текста
-        }
-    }
-
-        /**
-         * Метод под рисование в конкретной реализации
-         *
-         * @param canvas   область рисования
-         * @param windowCS СК окна
-         */
-        @Override
-        public void paintImpl (Canvas canvas, CoordinateSystem2i windowCS){
-            // выводим текст задачи
-            task.paint(canvas, windowCS);
-
-            // выводим кнопки
-            for (Button button : buttons) {
-                button.paint(canvas, windowCS);
-            }
-            // выводим поля ввода
+        } else if (e instanceof EventTextInput ee) {
             for (Input input : inputs) {
-                input.paint(canvas, windowCS);
+                if (input.isFocused()) {
+                    input.accept(ee);
+                }
             }
-            // выводим поля ввода
-            for (Label label : labels) {
-                label.paint(canvas, windowCS);
+            // перерисовываем окно
+            window.requestFrame();
+            // обработчик ввода клавиш
+        } else if (e instanceof EventKey ee) {
+            for (Input input : inputs) {
+                if (input.isFocused()) {
+                    input.accept(ee);
+                }
             }
+            // перерисовываем окно
+            window.requestFrame();
         }
     }
 
+    /**
+     * Метод под рисование в конкретной реализации
+     *
+     * @param canvas   область рисования
+     * @param windowCS СК окна
+     */
+    @Override
+    public void paintImpl(Canvas canvas, CoordinateSystem2i windowCS) {
+        // выводим текст задачи
+        task.paint(canvas, windowCS);
 
+        // выводим кнопки
+        for (Button button : buttons) {
+            button.paint(canvas, windowCS);
+        }
+        // выводим поля ввода
+        for (Input input : inputs) {
+            input.paint(canvas, windowCS);
+        }
+        // выводим поля ввода
+        for (Label label : labels) {
+            label.paint(canvas, windowCS);
+        }
+    }
+}
